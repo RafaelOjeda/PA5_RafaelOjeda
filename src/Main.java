@@ -1,26 +1,31 @@
 import java.util.*;
 import java.io.*;
 public class Main {
+    // Directories of INPUT and OUTPUT no need to change
     private static final String INPUT = System.getProperty("user.dir")+"/input/";
     private static final String OUTPUT = System.getProperty("user.dir")+"/output/";
+
+    // Convert command starts here
     public static void convert(String src, String trg) throws Exception {
+        // Gets extension of files
         String srcExt = src.substring(src.length()-3);
         String trgExt = trg.substring(trg.length()-3);
+        // Parameter handling
         if(!srcExt.equals("txt") && !srcExt.equals("csv"))
-            throw new Exception("bad format");
+            throw new Exception("Incorrect format must be a .TXT to .CSV or vice versa file only. Try Again.");
         if(!trgExt.equals("txt") && !trgExt.equals("csv"))
-            throw new Exception("bad format");
+            throw new Exception("Incorrect format must be a .TXT to .CSV or vice versa file only. Try Again.");
         if(src.equals(trg))
-            throw new Exception("same i/o");
+            throw new Exception("Same I/O. file cannot convert to the same file. Try again.");
         Scanner in = new Scanner(new File(src));
         PrintWriter out = new PrintWriter(trg);
-        if(srcExt.equals(trgExt)) {//same formats
-            if(srcExt.equals("txt")) {//txt->txt
+        if(srcExt.equals(trgExt)) {// Same format IE .TXT to .TXT or .CSV to .CSV
+            if(srcExt.equals("txt")) {// Converts .TXT to .TXT txt->txt
                 while(in.hasNextLine()) {
                     String[] cells = in.nextLine().split("\t");
-                    for(int i = 0; i < cells.length;i++) {
-                        String seperator = "\t";
-                        if(i == cells.length - 1){
+                    for(int i = 0; i < cells.length;i++) { // Loops through each word per line and checks how it will be formatted.
+                        String seperator = "\t"; // Default format is tab
+                        if(i == cells.length - 1) { // If it's the word check if there is a new line.
                             if(in.hasNextLine())
                                 seperator = "\n";
                             else
@@ -30,11 +35,24 @@ public class Main {
                     }
                     out.flush();
                 }
-            }else {//csv->csv
-                //complete here
+            } else {// Converts .CSV to .CSV csv->csv
+                while(in.hasNextLine()) {
+                    String[] cells = in.nextLine().split(",");
+                    for(int i = 0; i < cells.length;i++) { // Loops through each word per line and checks how it will be formatted.
+                        String seperator = ","; // Default format is tab
+                        if(i == cells.length - 1) { // If it's the word check if there is a new line.
+                            if(in.hasNextLine())
+                                seperator = "\n";
+                            else
+                                seperator = "";
+                        }
+                        out.print(cells[i] + seperator);
+                    }
+                    out.flush();
+                }
             }
         }else {
-            if(srcExt.equals("txt")) {//txt->csv
+            if(srcExt.equals("txt")) {
                 //complete here
             }else {//csv->txt
                 //complete here
@@ -43,6 +61,9 @@ public class Main {
         out.close();
         in.close();
     }
+    // Convert command ends here
+
+    // Normalize command starts here
     public static void normalize(String fileName) throws Exception{
         String delimiter = fileName.endsWith("txt")?"\t": ",";
         ArrayList<String>content = new ArrayList<String>();
@@ -70,16 +91,20 @@ public class Main {
         }
         out.close();
     }
+    // Normalize command ends here
+
     public static void main(String[] args) {
         Scanner keyboard = new Scanner(System.in);
+
+        // Input handling starts here
         while(true){
             String command = keyboard.nextLine();
-            String[] words = command.split(" ");
-            if(words.length == 0){
+            String[] words = command.split(" "); // Splits input to an array using each space character
+            if(words.length == 0){ // Empty input handling
                 System.out.println("Error: the command is empty! Please try again!");
-            }else if(words[0].equals("quit"))
+            }else if(words[0].equals("quit")) // Quit command handling
                 break;
-            else if(words[0].equals("convert")) {
+            else if(words[0].equals("convert")) { // Convert command handling
                 if(words.length != 3 ||
                         !words[1].endsWith(".txt") && !words[1].endsWith(".csv") ||
                         !words[2].endsWith(".txt") && !words[2].endsWith(".csv")){
@@ -97,7 +122,7 @@ public class Main {
                             "Details: " + exp.getMessage() +
                             "Please enter a new command: ");
                 }
-            }else if(words[0].equals("normalize")){
+            }else if(words[0].equals("normalize")){ // Normalize command handling
                 if(words.length != 2 ||
                         !words[1].endsWith(".txt") && !words[1].endsWith(".csv")) {
                     System.out.println("Error: the convert command needs to get 1 arguments:" +
@@ -120,6 +145,7 @@ public class Main {
                         "Please try again!");
             }
         }
+        // End of input/while loop handling
 
 
 
