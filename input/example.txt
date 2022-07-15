@@ -1,2 +1,3 @@
-Hello   lol lol lol
-yer normalize   convert
+"1,345"	hello	world		
+1			2.3	123.236
+1234567890	this is an example of long string			-2
