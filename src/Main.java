@@ -5,6 +5,29 @@ public class Main {
     private static final String INPUT = System.getProperty("user.dir")+"/input/";
     private static final String OUTPUT = System.getProperty("user.dir")+"/output/";
 
+    private static boolean isDbl(String dblString) {
+        // Returns boolean if it is a double. This method is used in the normalize method.
+        try {
+            Double.parseDouble(dblString);
+            if (dblString.contains(".")) { // If it does not contain a period it should return false as it is an int.
+                return true;
+            }
+        } catch (NumberFormatException exp) {
+            return false;
+        }
+        return false;
+    }
+
+    private static boolean isInt(String intString) {
+        // Returns boolean if it is an int. This method is used in the normalize method.
+        try {
+            Integer.parseInt(intString);
+            return true;
+        } catch (NumberFormatException exp) {
+            return false;
+        }
+    }
+
     // Convert command starts here
     public static void convert(String src, String trg) throws Exception {
         // Gets extension of files
@@ -94,25 +117,35 @@ public class Main {
 
     // Normalize command starts here
     public static void normalize(String fileName) throws Exception{
-        String delimiter = fileName.endsWith("txt")?"\t": ",";
-        ArrayList<String>content = new ArrayList<String>();
-        Scanner in = new Scanner(new File(fileName));
-        while(in.hasNextLine())
+        String delimiter = fileName.endsWith("txt")?"\t": ","; // If its a .TXT delimeter equals \t else delimeter is ","
+        ArrayList<String> content = new ArrayList<String>(); // This arrayList contains every line within the fileName file.
+        Scanner in = new Scanner(new File(INPUT + fileName));
+        while(in.hasNextLine()) {
             content.add(in.nextLine());
+        }
         in.close();
-        PrintWriter out = new PrintWriter(fileName);
+        PrintWriter out = new PrintWriter(OUTPUT + fileName);
         int rows = content.size();
         for(String line: content) {
-            String[] cells = line.split(delimiter);
-            int cols = cells.length;
+            String[] cells = line.split(delimiter); // Splits the lines in the content array into cells using the delimeter
+            int cols = cells.length;  // Length of every word within each line.
             for(String cell: cells){
                 //work on th next few lines...
                 //process each cell
                 //and print it using printf
+
+
+                if (cell.equals("")) { // If the cell is empty
+                    cell = "N/A";
+                } else if () { // If the cell contains a positive number
+                    cell = "+" + cell;
+                }
+
                 cols--;
                 out.print(cell);
-                if(cols != 0)
+                if(cols != 0) {
                     out.print(delimiter);
+                }
             }
             rows--;
             if(rows != 0)
