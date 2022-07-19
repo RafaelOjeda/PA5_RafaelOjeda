@@ -116,40 +116,64 @@ public class Main {
     // Convert command ends here
 
     // Normalize command starts here
-    public static void normalize(String fileName) throws Exception{
+    public static void normalize(String fileName) throws NumberFormatException, FileNotFoundException {
         String delimiter = fileName.endsWith("txt")?"\t": ","; // If its a .TXT delimeter equals \t else delimeter is ","
-        ArrayList<String> content = new ArrayList<String>(); // This arrayList contains every line within the fileName file.
+        ArrayList<String>content = new ArrayList<String>(); // This arrayList contains every line within the fileName file.
         Scanner in = new Scanner(new File(INPUT + fileName));
-        while(in.hasNextLine()) {
+        while(in.hasNextLine())
             content.add(in.nextLine());
-        }
         in.close();
-        PrintWriter out = new PrintWriter(OUTPUT + fileName);
+        PrintWriter out = new PrintWriter(INPUT + fileName);
         int rows = content.size();
         for(String line: content) {
-            String[] cells = line.split(delimiter); // Splits the lines in the content array into cells using the delimeter
-            int cols = cells.length;  // Length of every word within each line.
+            String[] cells = line.split(delimiter); // Splits the lines in the content array into cells using the delimiter
+            int cols = cells.length; // Length of every word within each line.
             for(String cell: cells){
                 //work on th next few lines...
                 //process each cell
                 //and print it using printf
 
-
                 if (cell.equals("")) { // If the cell is empty
-                    cell = "N/A";
-                } else if () { // If the cell contains a positive number
-                    cell = "+" + cell;
+                    cols--;
+                    out.print("N/A");
+                } else if (isInt(cell)) { // If the cell contains an integer
+                    cols--;
+                    int intNum = Integer.parseInt(cell);
+
+                    if (intNum > 0) {
+                        out.printf("+%010d", intNum);
+                    } else {
+                        out.printf("%010d", intNum);
+                    }
+                } else if (isDbl(cell)) { // If the cell contains a double
+                    cols--;
+                    double dblNum = Double.parseDouble(cell);
+
+                    if ( (dblNum > 100) || (dblNum < 0.01)) {
+                        out.printf("%.2e", dblNum);
+
+                    } else {
+                        out.printf("%.2f", dblNum); // Only shows to the hundredth.
+
+                    }
+                } else { // Anything else
+                    cols--;
+
+                    if (cell.length() > 13) { // Adds ellipse after 13 character length
+                        out.printf("%s. . .", cell.substring(0,11));
+                    } else {
+                        out.printf(cell); // Just prints the regular string
+                    }
                 }
 
-                cols--;
-                out.print(cell);
                 if(cols != 0) {
                     out.print(delimiter);
                 }
             }
             rows--;
-            if(rows != 0)
+            if(rows != 0) {
                 out.println();
+            }
         }
         out.close();
     }
